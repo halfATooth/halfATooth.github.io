@@ -1,0 +1,670 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/bar/miku.png">
+  <link rel="icon" href="/img/bar/miku.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="lhs">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="对数据库sqflite的封装 因为要临时存储用户登录状态，存储token等等的需求，所以把基本的很繁琐的数据库操作封装到DBManager和DBProvider，两个类中。具体的数据库操作对象只需要继承DBProvider类，然后自定义增删改查的函数即可。 1234567891011121314151617181920212223242526272829303132333435363738394">
+<meta property="og:type" content="article">
+<meta property="og:title" content="山大迷踪移动日志1">
+<meta property="og:url" content="http://example.com/2022/07/22/sdu-adventure-1/index.html">
+<meta property="og:site_name" content="LHS的矩形海">
+<meta property="og:description" content="对数据库sqflite的封装 因为要临时存储用户登录状态，存储token等等的需求，所以把基本的很繁琐的数据库操作封装到DBManager和DBProvider，两个类中。具体的数据库操作对象只需要继承DBProvider类，然后自定义增删改查的函数即可。 1234567891011121314151617181920212223242526272829303132333435363738394">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="c:%5CUsers%5Casus%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5Cimage-20220720203447362.png">
+<meta property="og:image" content="c:%5CUsers%5Casus%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5Cimage-20220720203511266.png">
+<meta property="og:image" content="c:%5CUsers%5Casus%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5Cimage-20220720205144139.png">
+<meta property="article:published_time" content="2022-07-22T14:23:34.000Z">
+<meta property="article:modified_time" content="2022-10-17T12:13:28.807Z">
+<meta property="article:author" content="lhs">
+<meta property="article:tag" content="学线实训">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="c:%5CUsers%5Casus%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5Cimage-20220720203447362.png">
+  
+  
+  
+  <title>山大迷踪移动日志1 - LHS的矩形海</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/custom/blockquote.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":true,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://fastly.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>LHS的矩形海</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="山大迷踪移动日志1"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-07-22 22:23" pubdate>
+          2022年7月22日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          42 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">山大迷踪移动日志1</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="对数据库sqflite的封装"><a class="markdownIt-Anchor" href="#对数据库sqflite的封装"></a> 对数据库sqflite的封装</h1>
+<p>因为要临时存储用户登录状态，存储token等等的需求，所以把基本的很繁琐的数据库操作封装到DBManager和DBProvider，两个类中。具体的数据库操作对象只需要继承DBProvider类，然后自定义增删改查的函数即可。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><code class="hljs dart"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DBManager</span></span>&#123;<br>  <span class="hljs-keyword">static</span> <span class="hljs-keyword">const</span> <span class="hljs-built_in">int</span> _VERSION = <span class="hljs-number">1</span>;<br>  <span class="hljs-keyword">static</span> <span class="hljs-keyword">const</span> <span class="hljs-built_in">String</span> _DB_NAME = <span class="hljs-string">&#x27;isdu.db&#x27;</span>;<br>  <span class="hljs-keyword">static</span> Database? _database;<br>  <span class="hljs-keyword">static</span> init() <span class="hljs-keyword">async</span> &#123;<br>    <span class="hljs-keyword">var</span> dbPath = <span class="hljs-keyword">await</span> getDatabasesPath();<br>    <span class="hljs-built_in">String</span> dbName = _DB_NAME;<br>    <span class="hljs-built_in">String</span> path = dbPath + dbName;<br>    <span class="hljs-keyword">if</span>(Platform.isIOS)&#123;<br>      path = dbPath + <span class="hljs-string">&quot;/&quot;</span> + dbName;<br>    &#125;<br>    _database = <span class="hljs-keyword">await</span> openDatabase(<br>      path,<br>      onCreate: (Database db,<span class="hljs-built_in">int</span> version) <span class="hljs-keyword">async</span> &#123;<br>      &#125;,<br>      version: _VERSION,<br>    );<br>  &#125;<br>  <span class="hljs-keyword">static</span> isTableExists(<span class="hljs-built_in">String</span> tableName) <span class="hljs-keyword">async</span> &#123;<br>    <span class="hljs-keyword">await</span> getCurrentDatabase();<br>    <span class="hljs-built_in">String</span> sql =<br>        <span class="hljs-string">&quot;select * from Sqlite_master where type = &#x27;table&#x27; and name = &#x27;<span class="hljs-subst">$tableName</span>&#x27;&quot;</span>;<br>    <span class="hljs-keyword">var</span> res = <span class="hljs-keyword">await</span> _database?.rawQuery(sql);<br>    <span class="hljs-keyword">return</span> res != <span class="hljs-keyword">null</span> &amp;&amp; res.isNotEmpty;<br>  &#125;<br>  <span class="hljs-keyword">static</span> Future&lt;Database?&gt; getCurrentDatabase() <span class="hljs-keyword">async</span> &#123;<br>    <span class="hljs-keyword">if</span>(_database == <span class="hljs-keyword">null</span>) &#123;<br>      <span class="hljs-keyword">await</span> init();<br>    &#125;<br>    <span class="hljs-keyword">return</span> _database;<br>  &#125;<br>  <span class="hljs-keyword">static</span> close()&#123;<br>    _database?.close();<br>    _database = <span class="hljs-keyword">null</span>;<br>  &#125;<br>&#125;<br><span class="hljs-keyword">abstract</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DBProvider</span></span>&#123;<br>  <span class="hljs-built_in">bool</span> isTableExits = <span class="hljs-keyword">false</span>;<br>  tableSqlString();<br>  tableName();<br>  Future&lt;Database&gt; getDatabase() <span class="hljs-keyword">async</span> &#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-keyword">await</span> open();<br>  &#125;<br>  <span class="hljs-meta">@mustCallSuper</span><br>  prepare(name, <span class="hljs-built_in">String</span> createSql) <span class="hljs-keyword">async</span> &#123;<br>    isTableExits = <span class="hljs-keyword">await</span> DBManager.isTableExists(name);<br>    <span class="hljs-keyword">if</span>(!isTableExits)&#123;<br>      Database? db = <span class="hljs-keyword">await</span> DBManager.getCurrentDatabase();<br>      <span class="hljs-keyword">return</span> <span class="hljs-keyword">await</span> db?.execute(createSql);<br>    &#125;<br>  &#125;<br>  <span class="hljs-meta">@mustCallSuper</span><br>  open() <span class="hljs-keyword">async</span> &#123;<br>    <span class="hljs-keyword">if</span>(!isTableExits)&#123;<br>      <span class="hljs-keyword">await</span> prepare(tableName(), tableSqlString());<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-keyword">await</span> DBManager.getCurrentDatabase();<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>之后，使用DBProvider即可构建所需的dao。例：</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs dart"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">LoginDao</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">DBProvider</span></span>&#123;<br>  <span class="hljs-keyword">final</span> <span class="hljs-built_in">String</span> name = <span class="hljs-string">&quot;loginCheck&quot;</span>;<br>  <span class="hljs-keyword">final</span> <span class="hljs-built_in">String</span> columnId = <span class="hljs-string">&#x27;id&#x27;</span>;<br><br>  <span class="hljs-meta">@override</span><br>  tableName() =&gt; name;<br><br>  <span class="hljs-meta">@override</span><br>  tableSqlString() &#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;create table <span class="hljs-subst">$name</span> (<span class="hljs-subst">$columnId</span> integer primary key autoincrement,isLogin INTEGER)&#x27;</span>;<br>  &#125;<br><br>  Future insert(LoginCheck loginCheck) <span class="hljs-keyword">async</span> &#123;<br>    Database db = <span class="hljs-keyword">await</span> getDatabase();<br>    <span class="hljs-keyword">return</span> <span class="hljs-keyword">await</span> db.insert(name, loginCheck.toMap());<br>  &#125;<br>  Future update(LoginCheck loginCheck) <span class="hljs-keyword">async</span> &#123;<br>    Database db = <span class="hljs-keyword">await</span> getDatabase();<br>    <span class="hljs-keyword">return</span> <span class="hljs-keyword">await</span> db.update(name,loginCheck.toMap(),where: <span class="hljs-string">&#x27;id = ?&#x27;</span>,whereArgs: [<span class="hljs-string">&#x27;1&#x27;</span>]);<br>  &#125;<br>  Future&lt;LoginCheck?&gt; query(<span class="hljs-built_in">String</span> id) <span class="hljs-keyword">async</span> &#123;<br>    Database db = <span class="hljs-keyword">await</span> getDatabase();<br>    <span class="hljs-built_in">List</span>&lt;<span class="hljs-built_in">Map</span>&lt;<span class="hljs-built_in">String</span>,<span class="hljs-built_in">dynamic</span>&gt;&gt; maps =<br>    <span class="hljs-keyword">await</span> db.query(name,where: <span class="hljs-string">&quot;id = ?&quot;</span>,whereArgs: [id]);<br>    <span class="hljs-keyword">if</span>(maps.isNotEmpty)&#123;<br>      LoginCheck loginCheck = LoginCheck.fromMap(maps.first);<br>      <span class="hljs-keyword">return</span> loginCheck;<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h1 id="在页面初始化时使用异步"><a class="markdownIt-Anchor" href="#在页面初始化时使用异步"></a> 在页面初始化时使用异步</h1>
+<p>有时候需要在页面构建之前进行一次异步操作（是不是可以说我们无法真正的在构建之前进行异步操作），其实异步内的内容是到最后才去执行的。</p>
+<h2 id="踩坑一"><a class="markdownIt-Anchor" href="#踩坑一"></a> 踩坑一</h2>
+<p><img src="C:%5CUsers%5Casus%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5Cimage-20220720203447362.png" srcset="/img/loading.gif" lazyload alt="image-20220720203447362" /></p>
+<p>原因：在执行build()之前，super.initState()没有得到执行。</p>
+<h2 id="踩坑二"><a class="markdownIt-Anchor" href="#踩坑二"></a> 踩坑二</h2>
+<p><img src="C:%5CUsers%5Casus%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5Cimage-20220720203511266.png" srcset="/img/loading.gif" lazyload alt="image-20220720203511266" /></p>
+<p>结果：_load()没有在构建页面之前执行</p>
+<p>原因：异步嘛~</p>
+<p>顺便一提，看到网上还有人这么写</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs dart">  _load() <span class="hljs-keyword">async</span> &#123;<br>    <span class="hljs-keyword">await</span> ...<br>  &#125;<br><br>  <span class="hljs-meta">@override</span><br>  <span class="hljs-keyword">void</span> initState ()&#123;<br>    <span class="hljs-keyword">super</span>.initState();<br>    Future.delayed(<span class="hljs-built_in">Duration</span>.zero, () =&gt; setState(() &#123;<br>　　    _load();<br>&#125;));<br>  &#125;<br><br></code></pre></td></tr></table></figure>
+<p>嗯……是sleep()的味道呢</p>
+<h2 id="解决方案"><a class="markdownIt-Anchor" href="#解决方案"></a> 解决方案：</h2>
+<p>最终的解决方案嘛，也不能说很完美。大体思路就是，先设一个初始值，让页面第一次构建的时候使用这个值；等到拿到回调的结果后，再赋新值，同时setState()刷新。</p>
+<p>此时，初始值很关键。大概就是第一次使用时连续闪出两个页面（第一个太快看不见，只能看到第二个），之后无影响和第一次无违和感，之后每次都闪一下的区别。</p>
+<p><img src="C:%5CUsers%5Casus%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5Cimage-20220720205144139.png" srcset="/img/loading.gif" lazyload alt="image-20220720205144139" /></p>
+<h1 id="response转map"><a class="markdownIt-Anchor" href="#response转map"></a> response转map</h1>
+<p>使用dio获得的response对象的data.toString()是这样的</p>
+<p>{code: 0, message: success, data: [6afe0c0544625b5204b2588f9021adc5, 0b49ef4b6388c3303082800980b6bca4]}</p>
+<p>也就是说，没有引号而且在奇怪的地方有空格，无法通过json转成map</p>
+<p>需要经过下面的操作</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs dart">s = s.replaceAll(<span class="hljs-string">&quot; &quot;</span>, <span class="hljs-string">&quot;&quot;</span>);<br>s = s.replaceAll(<span class="hljs-string">&quot;&#123;&quot;</span>, <span class="hljs-string">&quot;&#123;\&quot;&quot;</span>);<br>s = s.replaceAll(<span class="hljs-string">&quot;:&quot;</span>, <span class="hljs-string">&quot;\&quot;:\&quot;&quot;</span>);<br>s = s.replaceAll(<span class="hljs-string">&quot;,&quot;</span>, <span class="hljs-string">&quot;\&quot;,\&quot;&quot;</span>);<br>s = s.replaceAll(<span class="hljs-string">&quot;&#125;&quot;</span>, <span class="hljs-string">&quot;\&quot;&#125;&quot;</span>);<br>s = s.replaceAll(<span class="hljs-string">&quot;\&quot;[&quot;</span>, <span class="hljs-string">&quot;[\&quot;&quot;</span>);<br>s = s.replaceAll(<span class="hljs-string">&quot;]\&quot;&quot;</span>, <span class="hljs-string">&quot;\&quot;]&quot;</span>);<br></code></pre></td></tr></table></figure>
+<h1 id="画ui"><a class="markdownIt-Anchor" href="#画ui"></a> 画UI</h1>
+<h2 id="appbar的颜色"><a class="markdownIt-Anchor" href="#appbar的颜色"></a> appbar的颜色</h2>
+<p>一般颜色可以改</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs dart">ThemeData(<br>        primarySwatch: Colors.xxx,<br>      ),<br></code></pre></td></tr></table></figure>
+<p>但不能是Colors.white或Colors.black，因为它们不被认为是MaterialColor，此外也不能使用自定义的颜色，但是我们可以通过自定义一个产生MaterialColor的函数来自定义主题色</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs dart">MaterialColor createMaterialColor(Color color) &#123;<br>  <span class="hljs-built_in">List</span> strengths = &lt;<span class="hljs-built_in">double</span>&gt;[<span class="hljs-number">.05</span>];<br>  <span class="hljs-built_in">Map</span>&lt;<span class="hljs-built_in">int</span>, Color&gt; swatch = &#123;&#125;;<br>  <span class="hljs-keyword">final</span> <span class="hljs-built_in">int</span> r = color.red, g = color.green, b = color.blue;<br>  <span class="hljs-keyword">for</span> (<span class="hljs-built_in">int</span> i = <span class="hljs-number">1</span>; i &lt; <span class="hljs-number">10</span>; i++) &#123;<br>    strengths.add(<span class="hljs-number">0.1</span> * i);<br>  &#125;<br>  strengths.forEach((strength) &#123;<br>    <span class="hljs-keyword">final</span> <span class="hljs-built_in">double</span> ds = <span class="hljs-number">0.5</span> - strength;<br>    swatch[(strength * <span class="hljs-number">1000</span>).round()] = Color.fromRGBO(<br>      r + ((ds &lt; <span class="hljs-number">0</span> ? r : (<span class="hljs-number">255</span> - r)) * ds).round(),<br>      g + ((ds &lt; <span class="hljs-number">0</span> ? g : (<span class="hljs-number">255</span> - g)) * ds).round(),<br>      b + ((ds &lt; <span class="hljs-number">0</span> ? b : (<span class="hljs-number">255</span> - b)) * ds).round(),<br>      <span class="hljs-number">1</span>,<br>    );<br>  &#125;);<br>  <span class="hljs-keyword">return</span> MaterialColor(color.value, swatch);<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>这样就可以写成下面这种形式</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs dart">ThemeData(<br>        primarySwatch: createMaterialColor(Color(<span class="hljs-number">0x9c0c13</span>)),<span class="hljs-comment">//山大红</span><br>      ),<br></code></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&#123;<br>    <span class="hljs-string">&quot;code&quot;</span>:<span class="hljs-string">&quot;1&quot;</span>,<br>    <span class="hljs-string">&quot;msg&quot;</span>:<span class="hljs-string">&quot;操作成功&quot;</span>,<br>    <span class="hljs-string">&quot;data&quot;</span>:<br>    	&#123;<br>            <span class="hljs-string">&quot;nickName&quot;</span>:<span class="hljs-string">&quot;null&quot;</span>,<br>            <span class="hljs-string">&quot;name&quot;</span>:<span class="hljs-string">&quot;lhs&quot;</span>,<span class="hljs-string">&quot;isAdmin&quot;</span>:<span class="hljs-string">&quot;false&quot;</span>,<span class="hljs-string">&quot;avatar&quot;</span>:<span class="hljs-string">&quot;null&quot;</span>&#125;,<br>  <span class="hljs-string">&quot;token&quot;</span>:<span class="hljs-string">&quot;eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0IiwiZXhwIjoxNjU5NDk4MDc3LCJpbmZvIjp7InBhc3N3b3JkIjoicmV0dXJuMDsiLCJzaWQiOiIyMDIxMDAzMDAyMDkifX0.TRHfkKYd5couo6otPryU9WLOEo7aaQOIq5OuqANVEok&quot;</span><br>&#125;<br></code></pre></td></tr></table></figure>
+<p>StaggeredGridView弃用了</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%AD%A6%E7%BA%BF%E5%AE%9E%E8%AE%AD/">#学线实训</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>山大迷踪移动日志1</div>
+      <div>http://example.com/2022/07/22/sdu-adventure-1/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>lhs</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年7月22日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/10/08/sdu-adventure-2/" title="山大迷踪移动日志2">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">山大迷踪移动日志2</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/06/06/linear-algebra/" title="大一下线性代数期末复习">
+                        <span class="hidden-mobile">大一下线性代数期末复习</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
